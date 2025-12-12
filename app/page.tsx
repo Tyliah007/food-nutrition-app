@@ -59,6 +59,10 @@ export default function Home() {
   const present = displayedCalories.filter((v) => v != null) as number[];
   const avgCal = present.length ? Math.round((present.reduce((a, b) => a + b, 0) / present.length) * 10) / 10 : null;
 
+  const chartData = results
+    .map((f, i) => ({ label: f.description || `Item ${i + 1}`, value: displayedCalories[i] }))
+    .filter((d) => typeof d.value === "number") as { label: string; value: number }[];
+
   async function loadSaved() {
     try {
       const res = await fetch("/api/saved");
@@ -169,6 +173,12 @@ export default function Home() {
           </div>
         </div>
 
+        {chartData.length > 0 && (
+          <div className={styles.chartContainer}>
+            <CalorieBarChart data={chartData} />
+          </div>
+        )}
+
         <div className={styles.results}>
           {results.map((f: Food, i: number) => {
             const base = baseCalories[i];
@@ -217,7 +227,7 @@ export default function Home() {
           {selectedDetails && (
             <div style={{ marginTop: 12 }}>
               <h4>Saved Result Details</h4>
-              <pre style={{ maxHeight: 300, overflow: 'auto', background: '#fafafa', padding: 12, borderRadius: 6 }}>{JSON.stringify(selectedDetails, null, 2)}</pre>
+              <pre className={styles.jsonBox} style={{ maxHeight: 300 }}>{JSON.stringify(selectedDetails, null, 2)}</pre>
             </div>
           )}
         </div>
