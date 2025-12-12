@@ -19,7 +19,7 @@ export async function GET() {
   try {
     if (!process.env.DATABASE_URL) return NextResponse.json({ error: 'DATABASE_URL not set (set DATABASE_URL in environment)' }, { status: 500 });
     const docs = await listSaved(50);
-    return NextResponse.json(docs.map(d => ({ id: d.id, query: d.query_text, results: d.results, count: d.count, avgCal: d.avg_cal, createdAt: d.created_at })), { status: 200 });
+    return NextResponse.json(docs.map((d: any) => ({ id: d.id, query: d.query_text, results: d.results, count: d.count, avgCal: d.avg_cal, createdAt: d.created_at })), { status: 200 });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || String(err) }, { status: 500 });
   }
